@@ -14,13 +14,13 @@ Aegis WAF can be easily installed in your existing Ubuntu 18.04 server machine b
 
 Git clone the Aegis WAF repository:
 
-`sudo git clone https://gitlab.deeztek.com/dedwards/aegis-waf.git`
+`sudo git clone https://github.com/deeztek/aegis-web-application-firewall.git`
 
 This will clone the repository and create a aegis-waf directory in the directory you ran the git clone command from.
 
 Change to the aegis-waf directory:
 
-`cd aegis-waf/`
+`cd aegis-web-application-firewall/`
 
 Run the script as root:
 
