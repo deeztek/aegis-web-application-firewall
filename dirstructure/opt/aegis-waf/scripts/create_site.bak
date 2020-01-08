@@ -1,0 +1,24 @@
+#!/bin/bash
+DOMAIN="cloud.deeztek.com"
+DESTINATION=https://cloud.deeztek.com:443
+
+#CREATE NGINX LOGS DIRECTORY
+/bin/mkdir /usr/local/nginx/logs/$DOMAIN
+#CREATE MODSECURITY LOGS DIRECTORY
+/bin/mkdir /usr/local/nginx/logs/modsecurity/$DOMAIN
+#CREATE LISTEN DIRECTORY
+/bin/mkdir /usr/local/nginx/conf/listen/$DOMAIN
+#COPY listenHTTP.conf and listenHTTPS TO DOMAIN LISTEN DIRECTORY
+/bin/cp /usr/local/nginx/conf/listen/listenHTTP* /usr/local/nginx/conf/listen/$DOMAIN
+#CREATE WEBSITE NGINX CONFIG FILE
+/bin/cp /usr/local/nginx/conf/sites-available/THE-DOMAIN.conf /usr/local/nginx/conf/sites-available/${DOMAIN}.conf
+#CREATE MODSECURITY CONFIG FILE
+/bin/cp /usr/local/nginx/conf/THE-DOMAIN_modsecurity.conf /usr/local/nginx/conf/${DOMAIN}_modsecurity.conf
+#REPLACE ALL INSTANCES OF THE-DOMAIN WITH DOMAIN VARIABLE ON NGINX CONFIG FILE
+/bin/sed -i -e "s/THE-DOMAIN/$DOMAIN/g" "/usr/local/nginx/conf/sites-available/$DOMAIN.conf"
+#REPLACE ALL INSTANCES OF THE-DESTINATION WITH DESTINATION VARIABLE ON NGINX CONFIG FILE
+/bin/sed -i -e "s,THE-DESTINATION,${DESTINATION},g" "/usr/local/nginx/conf/sites-available/$DOMAIN.conf"
+#REPLACE ALL INSTANCES OF THE-DOMAIN WITH DOMAIN VARIABLE ON MODSECURITY CONFIG FILE
+/bin/sed -i -e "s/THE-DOMAIN/$DOMAIN/g" "/usr/local/nginx/conf/${DOMAIN}_modsecurity.conf"
+#CREATE HARD LINK FROM NGINX SITES-AVAILABLE TO NGINX SITES-ENABLED
+/bin/ln -s /usr/local/nginx/conf/sites-available/$DOMAIN.conf /usr/local/nginx/conf/sites-enabled/$DOMAIN.conf
