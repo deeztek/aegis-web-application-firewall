@@ -249,30 +249,6 @@ else
         exit
 fi
 
-echo "Inserting SSL Certificate Contents into SSL Certificate File"
-
-#/bin/sed -i -e "s,THE-PEM,$PEM,g" "/usr/local/nginx/conf/ssl/${SITE}.pem"
-/bin/echo "$PEM" >> /usr/local/nginx/conf/ssl/${SITE}.pem
-
-if [ $? -eq 0 ]; then
-    echo "Done"
-else
-        echo "Error occured. Stopped processing!"
-        exit
-fi
-
-echo "Inserting SSL Certificate Key Contents into SSL Certificate Key File"
-
-#/bin/sed -i -e "s,THE-KEY,$KEY,g" "/usr/local/nginx/conf/ssl/${SITE}.key"
-/bin/echo "$KEY" >> /usr/local/nginx/conf/ssl/${SITE}.key
-
-if [ $? -eq 0 ]; then
-    echo "Done"
-else
-        echo "Error occured. Stopped processing!"
-        exit
-fi
-
 
 echo "Enabling HTTPS site in Nginx"
 #CREATE HARD LINK FROM NGINX SITES-AVAILABLE TO NGINX SITES-ENABLED

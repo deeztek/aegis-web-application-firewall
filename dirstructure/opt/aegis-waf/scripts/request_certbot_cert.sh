@@ -10,8 +10,8 @@ if [ ! -f "/usr/local/nginx/conf/ssl/dhparam.pem" ]; then
 
 #GET INPUTS
 read -p "Enter a certificate name: "  CERTNAME
-read -p "Enter a PRIMARY domain for the Site: "  DOMAIN
-read -p "Enter any additional sub-domains separated by a comma (Leave blank if none): "  SECDOMAIN
+read -p "Enter a PRIMARY ROOT domain for the Site without www. in front of it (Example: domain.tld OR host.domain.tld): "  DOMAIN
+read -p "Enter any additional sub-domains separated by a comma (Example: www.domain.tld). Leave blank and press enter if none: "  SECDOMAIN
 
 #START CONFIGURATION
 
@@ -73,7 +73,7 @@ then
 ALLDOMAIN=$DOMAIN
      
 else
-ALLDOMAIN=$DOMAIN,$SECDOMAIN
+ALLDOMAIN="$DOMAIN,$SECDOMAIN"
     
 fi
 

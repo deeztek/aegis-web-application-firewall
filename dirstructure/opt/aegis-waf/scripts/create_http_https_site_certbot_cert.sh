@@ -10,10 +10,32 @@ if [ ! -f "/usr/local/nginx/conf/ssl/dhparam.pem" ]; then
 
 #GET INPUTS
 read -p "Enter a site name: "  SITE
-read -p "Enter a domain(s) for the Site (Multiple domains must be separated by a space): "  DOMAIN
+read -p "Enter a PRIMARY ROOT domain for the Site without www. in front of it (Example: domain.tld OR host.domain.tld): "  DOMAIN
+read -p "Enter any additional sub-domains separated by a comma (Example: www.domain.tld). Leave blank and press enter if none: "  SECDOMAIN
 read -p "Enter a destination url including http(s):// (Example: http://www.domain.tld for HTTP Only or https://www.domain.tld for HTTPS) Do NOT include a Port Number: "  DESTINATION
 read -p "Enter a Destination Port Number for the Site (Example: 80 for http or 443 for https):" PORT
 read -p "Enter SSL Protocols you wish to enable separated by a space (Example: TLSv1.1 TLSv1.2 TLSv1.3):" SSLPROTOCOLS
+
+#IF SECDOMAIN IS EMPTY THEN SET ALLDOMAIN TO $DOMAIN IF NOT SET ALLDOMAIN TO $DOMAIN AND $SECDOMAIN (CERTBOT)
+if [ -z "$SECDOMAIN" ]
+then
+ALLDOMAIN=$DOMAIN
+     
+else
+ALLDOMAIN="$DOMAIN,$SECDOMAIN"
+    
+fi
+
+#IF SECDOMAIN IS EMPTY THEN SET ALLDOMAINNGINX TO $DOMAIN IF NOT SET ALLDOMAINNGINX TO $DOMAIN AND $SECDOMAIN (NGINX)
+if [ -z "$SECDOMAIN" ]
+then
+ALLDOMAINNGINX=$DOMAIN
+     
+else
+ALLDOMAINNGINX="$DOMAIN $SECDOMAIN"
+    
+fi
+
 
 #START CONFIGURATION
 echo "Creating Nginx Logs Directory"
@@ -96,7 +118,7 @@ fi
 
 echo "Configuring Nginx HTTP Conf File Domain"
 #REPLACE ALL INSTANCES OF THE-DOMAIN WITH DOMAIN VARIABLE ON NGINX CONFIG FILE
-/bin/sed -i -e "s/THE-DOMAIN/$DOMAIN/g" "/usr/local/nginx/conf/sites-available/$SITE.conf"
+/bin/sed -i -e "s/THE-DOMAIN/$ALLDOMAINNGINX/g" "/usr/local/nginx/conf/sites-available/$SITE.conf"
 
 if [ $? -eq 0 ]; then
     echo "Done"
@@ -160,6 +182,8 @@ else
         exit
 fi
 
+
+
 #=== DO NOT ENABLE BELOW UNLESS TROUBLESHOOTING ===
 #echo "Pausing for 5 seconds waiting for Nginx"
 #sleep 5
@@ -180,8 +204,8 @@ fi
 
 
 echo "Requesting Letsencrypt Certificate"
-#Request Letsencrypt Certificate
-/usr/bin/certbot certonly --noninteractive --webroot --agree-tos --register-unsafely-without-email -d ${DOMAIN} -w /var/www/html/$SITE
+#Request Letsencrypt Certificate with ALLDOMAIN variable
+/usr/bin/certbot certonly --noninteractive --webroot --agree-tos --register-unsafely-without-email -d ${ALLDOMAIN} -w /var/www/html/$SITE
 
 if [ $? -eq 0 ]; then
     echo "Done"
@@ -213,9 +237,20 @@ else
         exit
 fi
 
-echo "Configuring Nginx HTTPS Conf File Domain"
-#REPLACE ALL INSTANCES OF THE-DOMAIN WITH DOMAIN VARIABLE ON NGINX CONFIG FILE
-/bin/sed -i -e "s/THE-DOMAIN/$DOMAIN/g" "/usr/local/nginx/conf/sites-available/$SITE-ssl.conf"
+echo "Configuring Nginx HTTPS Conf File server_name Domain"
+#REPLACE ALL INSTANCES OF THE-DOMAIN WITH ALLDOMAINNGINX VARIABLE ON NGINX CONFIG FILE
+/bin/sed -i -e "s/THE-DOMAIN/$ALLDOMAINNGINX/g" "/usr/local/nginx/conf/sites-available/$SITE-ssl.conf"
+
+if [ $? -eq 0 ]; then
+    echo "Done"
+else
+        echo "Error occured. Stopped processing!"
+        exit
+fi
+
+echo "Configuring Nginx HTTPS Conf File ssl_certificate and ssl_certificate_key Domain"
+#REPLACE ALL INSTANCES OF THE-DOMAIN WITH ALLDOMAINNGINX VARIABLE ON NGINX CONFIG FILE
+/bin/sed -i -e "s/THE-PRIMARY-DOMAIN/$DOMAIN/g" "/usr/local/nginx/conf/sites-available/$SITE-ssl.conf"
 
 if [ $? -eq 0 ]; then
     echo "Done"

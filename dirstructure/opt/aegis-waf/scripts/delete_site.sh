@@ -1,5 +1,10 @@
 #!/bin/bash
 
+echo "WARNING" | boxes -d stone -p a2v1
+echo "This script will NOT delete any Lets Encrypt certificates."
+echo "Lets encrypt certificates must be manually removed from their respective /etc/letsencrypt/live/domain.tld directories"
+echo "This script will prompt you to delete ONLY manually entered certificate and key files"
+
 #GET INPUTS
 read -p "Enter a site name to permanently delete: "  SITE
 
@@ -66,22 +71,13 @@ else
         echo There was an error removing Modsecurity .conf file. Error was $?
 fi
 
-echo "Removing certificate .pem file"
-#Remove certificate .pem file
-/bin/rm -rf /usr/local/nginx/conf/ssl/${SITE}.pem
+while true; do
+    read -p "Do you wish remove the SSL Certificate and Key Files? (Enter y or Y. Warning!! Entering y or Y will remove the certificate and key files which may break other sites that use those files)" yn
+    case $yn in
+        [Yy]* ) echo "Removing SSL Certificate and Key Files"; /bin/rm -rf /usr/local/nginx/conf/ssl/${SITE}.pem; /bin/rm -rf /usr/local/nginx/conf/ssl/${SITE}.key;
+        echo "Done. Reload Nginx for changes to take effect!"; break;;
+        [Nn]* ) echo "Done. Reload Nginx for changes to take effect!;"; break;;
+        * ) echo "Please answer yes or no.";;
+    esac
+done
 
-if [ $? -eq 0 ]; then
-    echo Done
-else
-        echo There was an error removing .pem file. Error was $?
-fi
-
-echo "Removing key .key file"
-#Remove key .key file
-/bin/rm -rf /usr/local/nginx/conf/ssl/${SITE}.key
-
-if [ $? -eq 0 ]; then
-    echo Done. Reload Nginx for changes to take effect!
-else
-        echo There was an error removing .key file. Error was $?
-fi
