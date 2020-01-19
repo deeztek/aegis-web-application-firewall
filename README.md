@@ -70,6 +70,7 @@ If Aegis WAF Git directory does NOT exist, git clone the Aegis WAF repository:
 If Aegis WAF Git directory exists, change to the existing aegis-waf git directory and git pull the Aegis WAF repository:
 
 `cd /path/to/aegis-web-application-firewall`
+
 `sudo git pull https://github.com/deeztek/aegis-web-application-firewall.git`
 
 This will clone all the changes to the aegis-web-application-firewall directory.
