@@ -61,3 +61,20 @@ Support can be obtained by visiting our Aegis WAF Forums at:
 
 [https://forums.deeztek.com/viewforum.php?f=33](https://forums.deeztek.com/viewforum.php?f=33)
 
+**Updating**
+
+If Aegis WAF Git directory does NOT exist, git clone the Aegis WAF repository:
+
+`sudo git clone https://github.com/deeztek/aegis-web-application-firewall.git`
+
+If Aegis WAF Git directory exists, change to the existing aegis-waf git directory and git pull the Aegis WAF repository:
+
+`cd /path/to/aegis-web-application-firewall`
+`sudo git pull https://github.com/deeztek/aegis-web-application-firewall.git`
+
+This will clone all the changes to the aegis-web-application-firewall directory.
+
+Run the update script as root:
+
+`bash ubuntu_aegis_waf_update.sh`
+
