@@ -7,8 +7,8 @@
 
 #Create a copy of this script to a seperate directory of your Aegis WAF system. Do not run it from its default location at /opt/aegis-waf/scripts because any updates to Aegis WAF will overwrite this script
 
-#Ensure unrar is installed
-apt install -y unrar sendemail libio-socket-ssl-perl libnet-ssleay-perl perl cifs-utils
+#Install packages necessary for restore (Not used since ubuntu_aegis_waf_install installs the packages)
+#apt install -y unrar sendemail libio-socket-ssl-perl libnet-ssleay-perl perl cifs-utils
 
 #Ensure Script is run as root and if not exit
 if [ `id -u` -ne 0 ]; then

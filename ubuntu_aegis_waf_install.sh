@@ -69,7 +69,14 @@ liblmdb-dev \
 automake \
 pkgconf \
 haveged \
-unzip 2>> $SCRIPTPATH/install_log-$TIMESTAMP.log
+unzip \
+unrar \
+sendemail \
+libio-socket-ssl-perl \
+libnet-ssleay-perl \
+perl \
+cifs-utils\
+rar 2>> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 ERR=$?
 if [ $ERR != 0 ]; then
