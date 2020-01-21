@@ -13,7 +13,7 @@
 #30 12 * * *  /scripts/ubuntu_aegis_waf_backup.sh
 
 #Ensure rar, sendmail, Perl IO::Socket::SSL and Perl Net::SSLeay are installed
-apt install -y rar sendemail libio-socket-ssl-perl libnet-ssleay-perl perl
+apt install -y rar sendemail libio-socket-ssl-perl libnet-ssleay-perl perl cifs-utils
 
 #Ensure Script is run as root and if not exit
 if [ `id -u` -ne 0 ]; then

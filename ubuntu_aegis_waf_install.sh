@@ -63,6 +63,9 @@ libgeoip-dev \
 libgeoip1 \
 libmaxminddb-dev \
 libmaxminddb0 \
+libyajl-dev \
+libyajl2 \
+liblmdb-dev \
 automake \
 pkgconf \
 haveged \
