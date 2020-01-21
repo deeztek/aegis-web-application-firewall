@@ -75,7 +75,7 @@ sendemail \
 libio-socket-ssl-perl \
 libnet-ssleay-perl \
 perl \
-cifs-utils\
+cifs-utils \
 rar 2>> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 ERR=$?
