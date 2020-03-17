@@ -17,7 +17,7 @@ SCRIPTPATH=$(pwd)
 TIMESTAMP=`date +%m-%d-%Y-%H%M`
 
 #Set Latest Nginx Version as of 12/26/2019
-NGINXVER=1.16.1
+NGINXVER=1.17.9
 
 #Script Debug Set Variables. Do not enable unless you are troubleshooting
 
