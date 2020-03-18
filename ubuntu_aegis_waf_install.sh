@@ -93,6 +93,7 @@ echo "[`date +%m/%d/%Y-%H:%M`] STEP 2 OF 11. Cloning and building Modsecurity" >
 cd /opt && \
 /usr/bin/git clone https://github.com/SpiderLabs/ModSecurity && \
 cd ModSecurity && \
+/usr/bin/git checkout v3.0.4 && \
 sh build.sh && \
 /usr/bin/git submodule init && \
 /usr/bin/git submodule update && \
