@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#Ensure Script is run as root and if not exit
+if [ `id -u` -ne 0 ]; then
+      echo "==== ERROR ===="  | boxes -d stone -p a2v1
+      echo "This script must be executed as root, Exiting..."
+      exit 1
+   fi
+
 #GET INPUTS
 read -p "Enter a site name: "  SITE
 read -p "Enter a domain(s) for the Site (Multiple domains must be separated by a space): "  DOMAIN

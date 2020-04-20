@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#Ensure Script is run as root and if not exit
+if [ `id -u` -ne 0 ]; then
+      echo "==== ERROR ===="  | boxes -d stone -p a2v1
+      echo "This script must be executed as root, Exiting..."
+      exit 1
+   fi
+
 
 #Check if /usr/local/nginx/conf/ssl/dhparam.pem exists and if not exit
 if [ ! -f "/usr/local/nginx/conf/ssl/dhparam.pem" ]; then
@@ -19,6 +26,38 @@ echo "Paste SSL Unencrypted Key including -----BEGIN RSA PRIVATE KEY----- and --
 KEY=$(sed '/^$/q')
 read -p "Enter SSL Protocols you wish to enable separated by a space (Example: TLSv1.1 TLSv1.2 TLSv1.3):" SSLPROTOCOLS
 
+#Check if /usr/local/nginx/conf/sites-available/$SITE.conf exists
+if [ -f "/usr/local/nginx/conf/sites-available/$SITE.conf" ]; then
+      echo "==== ERROR ===="  | boxes -d stone -p a2v1
+      echo "The site seems to already exist in /usr/local/nginx/conf/sites-available/$SITE.conf"
+      echo "Please delete the site before attempting to create it"
+      exit 1
+   fi
+
+#Check if /usr/local/nginx/conf/sites-available/$SITE-ssl.conf exists
+if [ -f "/usr/local/nginx/conf/sites-available/$SITE-ssl.conf" ]; then
+      echo "==== ERROR ===="  | boxes -d stone -p a2v1
+      echo "The site seems to already exist in /usr/local/nginx/conf/sites-available/$SITE-ssl.conf"
+      echo "Please delete the site before attempting to create it"
+      exit 1
+   fi
+
+#Check if /usr/local/nginx/conf/sites-enabled/$SITE.conf exists
+if [ -f "/usr/local/nginx/conf/sites-enabled/$SITE.conf" ]; then
+      echo "==== ERROR ===="  | boxes -d stone -p a2v1
+      echo "The site seems to already exist in /usr/local/nginx/conf/sites-enabled/$SITE.conf"
+      echo "Please delete the site before attempting to create it"
+      exit 1
+   fi
+
+#Check if /usr/local/nginx/conf/sites-enabled/$SITE-ssl.conf exists
+if [ -f "/usr/local/nginx/conf/sites-enabled/$SITE-ssl.conf" ]; then
+      echo "==== ERROR ===="  | boxes -d stone -p a2v1
+      echo "The site seems to already exist in /usr/local/nginx/conf/sites-enabled/$SITE-ssl.conf"
+      echo "Please delete the site before attempting to create it"
+      exit 1
+   fi
+   
 #START CONFIGURATION
 echo "Creating Nginx Logs Directory"
 #CREATE NGINX LOGS DIRECTORY

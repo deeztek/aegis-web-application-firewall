@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#Ensure Script is run as root and if not exit
+if [ `id -u` -ne 0 ]; then
+      echo "==== ERROR ===="  | boxes -d stone -p a2v1
+      echo "This script must be executed as root, Exiting..."
+      exit 1
+   fi
 
 #Check if /usr/local/nginx/conf/ssl/dhparam.pem exists and if not exit
 if [ ! -f "/usr/local/nginx/conf/ssl/dhparam.pem" ]; then

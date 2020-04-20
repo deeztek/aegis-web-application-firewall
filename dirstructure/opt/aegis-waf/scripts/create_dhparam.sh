@@ -1,3 +1,12 @@
+#!/bin/bash
+
+#Ensure Script is run as root and if not exit
+if [ `id -u` -ne 0 ]; then
+      echo "==== ERROR ===="  | boxes -d stone -p a2v1
+      echo "This script must be executed as root, Exiting..."
+      exit 1
+   fi
+   
 while true; do
         read -p "Do you wish to create a Diffie-Hellman(DHParam) Key Exchange File? (Enter y or Y)" yn
     case $yn in

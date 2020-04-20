@@ -1,4 +1,12 @@
 #!/bin/bash
+
+#Ensure Script is run as root and if not exit
+if [ `id -u` -ne 0 ]; then
+      echo "==== ERROR ===="  | boxes -d stone -p a2v1
+      echo "This script must be executed as root, Exiting..."
+      exit 1
+   fi
+
 # Aegis Bash Menu
 
 while true
@@ -30,6 +38,10 @@ do
             ;;
         "Request Lets Encrypt Certificate Only")
             /opt/aegis-waf/scripts/request_certbot_cert.sh
+            break
+            ;;
+        "Test Lets Encrypt Certificate Renewal")
+            /opt/aegis-waf/scripts/test_certbot_renew.sh
             break
             ;;
         "Test Nginx Configuration")
