@@ -57,7 +57,7 @@ Coming soon...
 
 **Support**
 
-Support can be obtained by visiting our Aegis WAF Support Forums at:
+Support can be obtained by visiting our Aegis WAF Discourse Forums at:
 
 [https://community.deeztek.com/c/aegis-waf-support](https://community.deeztek.com/c/aegis-waf-support)
 
