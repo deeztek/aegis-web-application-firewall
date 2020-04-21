@@ -12,7 +12,7 @@ if [ `id -u` -ne 0 ]; then
 while true
 do
 PS3='Please Select Option: '
-options=("Create DHParam File" "Create HTTP/HTTPS Site and provide SSL Certificate and Key" "Create HTTP/HTTPS Site and provide SSL Certificate and Key Paths" "Create HTTP/HTTPS Site and Request Lets Encrypt Certificate" "Delete Site" "Request Lets Encrypt Certificate Only" "Test Nginx Configuration" "Restart Nginx" "Check Nginx Status" "Exit")
+options=("Create DHParam File" "Create HTTP/HTTPS Site and provide SSL Certificate and Key" "Create HTTP/HTTPS Site and provide SSL Certificate and Key Paths" "Create HTTP/HTTPS Site and Request Lets Encrypt Certificate" "Delete Site" "Request Lets Encrypt Certificate Only" "Test Lets Encrypt Certificate Renewal" "Test Nginx Configuration" "Restart Nginx" "Check Nginx Status" "Exit")
 select opt in "${options[@]}"
 do
     case $opt in
