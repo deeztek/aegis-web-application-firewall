@@ -59,7 +59,7 @@ Coming soon...
 
 Support can be obtained by visiting our Aegis WAF Support Forums at:
 
-[https://community.deeztek.com/c/hermes-seg-suppport](https://community.deeztek.com/c/hermes-seg-suppport)
+[https://community.deeztek.com/c/aegis-waf-support](https://community.deeztek.com/c/aegis-waf-support)
 
 **Updating**
 
