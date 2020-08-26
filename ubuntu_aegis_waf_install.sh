@@ -275,8 +275,8 @@ fi
 
 echo "[`date +%m/%d/%Y-%H:%M`] STEP 12 OF 12. Configuring Certbot" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
-#Add command to reload nginx after renewal in /etc/letsencrypt/cli.ini
-/bin/grep -qxF 'deploy-hook = systemctl reload nginx' /etc/letsencrypt/cli.ini || /bin/sed -i '$a\' /etc/letsencrypt/cli.ini || echo -e 'deploy-hook = systemctl reload nginx' >> /etc/letsencrypt/cli.ini 2>> $SCRIPTPATH/install_log-$TIMESTAMP.log
+#Configure Certbot
+/bin/cp $SCRIPTPATH/dirstructure/etc/letsencrypt/cli.ini /etc/letsencrypt/cli.ini 2>> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 ERR=$?
 if [ $ERR != 0 ]; then
