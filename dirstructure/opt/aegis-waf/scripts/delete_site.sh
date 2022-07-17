@@ -81,7 +81,7 @@ fi
 
 echo "Attempting to remove any existing Lets Encrypt Certificates"
 #Remove Lets Encrypt Certificates
-/usr/bin/certbot delete --cert-name ${SITE}
+/usr/bin/certbot delete --non-interactive --cert-name ${SITE}
 
 if [ $? -eq 0 ]; then
     echo Done

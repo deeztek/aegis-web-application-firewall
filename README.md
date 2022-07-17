@@ -8,7 +8,7 @@ You must ensure that you allow BOTH incoming **TCP/80** and **TCP/443** to your 
 
 **Installation**
 
-Aegis WAF can be easily installed in your existing Ubuntu 18.04 server machine by utilizing the included **ubuntu_aegis_waf_install.sh** script. The script requires that you have a fully updated Ubuntu 18.04 server installation.
+Aegis WAF can be easily installed in your existing Ubuntu 18.04 LTS, 20.04 LTS or 22.04 LTS server machine by utilizing the included **ubuntu_aegis_waf_install.sh** script. The script requires that you have a fully updated Ubuntu server installation.
 
 **Quick script install and run instructions**
 
