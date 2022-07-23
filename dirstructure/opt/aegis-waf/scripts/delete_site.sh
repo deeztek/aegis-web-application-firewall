@@ -37,6 +37,33 @@ else
         echo "There was an error while removing Modsecurity Logs Directory. Error was $?"
 fi
 
+echo "Removing Logrotate Access Logs Config"
+/bin/rm -rf /etc/logrotate.d/${SITE}_access
+
+if [ $? -eq 0 ]; then
+    echo Done
+else
+        echo "There was an error while removing Logrotate Access Logs Config. Error was $?"
+fi
+
+echo "Removing Logrotate Error Logs Config"
+/bin/rm -rf /etc/logrotate.d/${SITE}_error
+
+if [ $? -eq 0 ]; then
+    echo Done
+else
+        echo "There was an error while removing Logrotate Error Logs Config. Error was $?"
+fi
+
+echo "Removing Logrotate Modsecurity Logs Config"
+/bin/rm -rf /etc/logrotate.d/${SITE}_modsecurity
+
+if [ $? -eq 0 ]; then
+    echo Done
+else
+        echo "There was an error while removing Logrotate Modsecurity Logs Config. Error was $?"
+fi
+
 echo "Removing sites-available .conf file(s)"
 #Remove sites-available .conf file
 /bin/rm -rf /usr/local/nginx/conf/sites-available/${SITE}.conf

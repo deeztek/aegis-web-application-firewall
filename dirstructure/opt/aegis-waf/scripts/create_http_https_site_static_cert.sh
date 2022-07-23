@@ -75,6 +75,69 @@ echo "Creating Modsecurity Logs Directory"
 #CREATE MODSECURITY LOGS DIRECTORY
 /bin/mkdir -p /usr/local/nginx/logs/modsecurity/$SITE
 
+echo "Creating Access Logs Logrotate Config"
+/bin/cp /opt/aegis-waf/templates/site_access_logrotate_template /etc/logrotate.d/${SITE}_access
+
+if [ $? -eq 0 ]; then
+    echo "Done"
+else
+        echo "Error occured. Stopped processing!"
+        exit
+fi
+
+echo "Configuring Access Logs Logrotate"
+/bin/sed -i -e "s/THE-SITE/$SITE/g" "/etc/logrotate.d/${SITE}_access" && \
+/bin/chmod 0644 /etc/logrotate.d/${SITE}_access
+
+if [ $? -eq 0 ]; then
+    echo "Done"
+else
+        echo "Error occured. Stopped processing!"
+        exit
+fi
+
+echo "Creating Error Logs Logrotate Config"
+/bin/cp /opt/aegis-waf/templates/site_error_logrotate_template /etc/logrotate.d/${SITE}_error
+
+if [ $? -eq 0 ]; then
+    echo "Done"
+else
+        echo "Error occured. Stopped processing!"
+        exit
+fi
+
+echo "Configuring Error Logs Logrotate"
+/bin/sed -i -e "s/THE-SITE/$SITE/g" "/etc/logrotate.d/${SITE}_error" && \
+/bin/chmod 0644 /etc/logrotate.d/${SITE}_error
+
+if [ $? -eq 0 ]; then
+    echo "Done"
+else
+        echo "Error occured. Stopped processing!"
+        exit
+fi
+
+echo "Creating Modsecurity Logs Logrotate Config"
+/bin/cp /opt/aegis-waf/templates/site_modsecurity_logrotate_template /etc/logrotate.d/${SITE}_modsecurity
+
+if [ $? -eq 0 ]; then
+    echo "Done"
+else
+        echo "Error occured. Stopped processing!"
+        exit
+fi
+
+echo "Configuring Mosecurity Logs Logrotate"
+/bin/sed -i -e "s/THE-SITE/$SITE/g" "/etc/logrotate.d/${SITE}_modsecurity" && \
+/bin/chmod 0644 /etc/logrotate.d/${SITE}_modsecurity
+
+if [ $? -eq 0 ]; then
+    echo "Done"
+else
+        echo "Error occured. Stopped processing!"
+        exit
+fi
+
 
 echo "Creating Nginx Site Listen Directory"
 #CREATE LISTEN DIRECTORY

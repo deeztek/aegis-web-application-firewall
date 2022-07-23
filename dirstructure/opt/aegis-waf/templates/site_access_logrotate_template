@@ -1,0 +1,10 @@
+/usr/local/nginx/logs/THE-SITE/THE-SITE_access.log {
+    daily
+    rotate 14
+    size 10M
+    compress
+    delaycompress
+    notifempty
+    nomail
+    missingok
+}

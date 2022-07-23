@@ -1,0 +1,10 @@
+/usr/local/nginx/logs/modsecurity/THE-SITE/THE-SITE_audit.log {
+    daily
+    rotate 14
+    size 10M
+    compress
+    delaycompress
+    notifempty
+    nomail
+    missingok
+}

@@ -11,7 +11,7 @@ if [ `id -u` -ne 0 ]; then
 apt install jq -y
 
 INPUTLOGPATH="/usr/local/nginx/logs/modsecurity"
-OUTPUTLOGPATH="/home/dedwards"
+OUTPUTLOGPATH="/tmp"
 
 #GET INPUTS
 read -p "Enter a the site name for which to parse modsecurity logs: "  SITE
