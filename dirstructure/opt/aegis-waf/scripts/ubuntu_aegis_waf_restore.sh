@@ -51,7 +51,10 @@ if mount | grep -q "$smbmount"; then
 
 #PERFORM THE RESTORE
 cd /
-/usr/bin/unrar x -y $smbmount/$restorefile >> $smbmount/restorelog-$timestamp.log
+#/usr/bin/unrar x -y $smbmount/$restorefile >> $smbmount/restorelog-$timestamp.log
+
+tar -xvzf $smbmount/$restorefile >> $smbmount/restorelog-$timestamp.log
+
 
 #Umount Backup Directory
 /bin/umount $smbmount

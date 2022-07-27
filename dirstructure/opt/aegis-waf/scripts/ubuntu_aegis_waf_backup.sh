@@ -62,7 +62,10 @@ if [ ! -d "$smbmount" ]; then
 if mount | grep -q "$smbmount"; then
 
 #PERFORM THE BACKUP
-/usr/bin/rar a -m1 -mt8  $smbmount/aegis-waf-$timestamp.rar /etc/letsencrypt /usr/local/nginx/logs /usr/local/nginx/conf/sites-available /usr/local/nginx/conf/sites-enabled /usr/local/nginx/conf/modsecurity /usr/local/nginx/conf/ssl /usr/local/nginx/conf/listen >> $smbmount/backuplog-$timestamp.log
+#/usr/bin/rar a -m1 -mt8  $smbmount/aegis-waf-$timestamp.rar /etc/letsencrypt /usr/local/nginx/logs /usr/local/nginx/conf/sites-available /usr/local/nginx/conf/sites-enabled /usr/local/nginx/conf/modsecurity /usr/local/nginx/conf/ssl /usr/local/nginx/conf/listen >> $smbmount/backuplog-$timestamp.log
+
+/bin/tar -cvzf $smbmount/aegis-waf-$timestamp.tar.gz /etc/letsencrypt /usr/local/nginx/logs /usr/local/nginx/conf/sites-available /usr/local/nginx/conf/sites-enabled /usr/local/nginx/conf/modsecurity /usr/local/nginx/conf/ssl /usr/local/nginx/conf/listen  >> $smbmount/backuplog-$timestamp.log
+
 
 
 #delete letsencrypt backup files older than $backupretention days
