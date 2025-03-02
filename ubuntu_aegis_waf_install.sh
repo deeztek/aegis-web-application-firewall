@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#The script below assumes you have a fully installed and updated Ubuntu 18.04 server
+#The script below assumes you have a fully installed and updated Ubuntu server
 
 #Ensure Script is run as root and if not exit
 if [ `id -u` -ne 0 ]; then
@@ -20,12 +20,6 @@ TIMESTAMP=`date +%m-%d-%Y-%H%M`
 RED=`tput setaf 1`
 GREEN=`tput setaf 2`
 RESET=`tput sgr0`
-
-#Set Latest Nginx Version as of 12/26/2019
-#NGINXVER=1.17.9
-
-#Script Debug Set Variables. Do not enable unless you are troubleshooting
-
 
 echo "Installing Boxes Prerequisite"
 #Install boxes
@@ -80,7 +74,9 @@ done
 
 echo -e "\n"
 
-read -p "Browse to https://nginx.org/en/download.html to get the latest ${GREEN}STABLE${RESET} version of Nginx. The latest version will appear in the format nginx-1.XX.X (Example: nginx-1.22.0). Enter the latest stable version (Example: nginx-1.22.0):"  NGINXVER
+read -p "Browse to https://nginx.org/en/download.html to get the latest ${GREEN}STABLE${RESET} version of Nginx. The latest version will appear in the format nginx-1.XX.X (Example: nginx-1.26.3). Enter the latest stable version (Example: nginx-1.26.3):"  NGINXVER
+
+read -p "Browse to https://github.com/owasp-modsecurity/ModSecurity/releases to get the latest release of Modsecurity and enter it here including the "v" in front of it (Example: v3.0.14):"  MODSECURITYVER
 
 source "$(pwd)/spinner.sh"
 
@@ -91,7 +87,7 @@ stop_spinner $?
 
 #START CONFIGURATION
 
-echo "[`date +%m/%d/%Y-%H:%M`] STEP 1 OF 13. Installing Prerequisites" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
+echo "[`date +%m/%d/%Y-%H:%M`] Installing Prerequisites" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 start_spinner 'Installing Prerequisites...'
 sleep 1
@@ -102,91 +98,95 @@ sleep 1
 stop_spinner $?
 
 
-echo "[`date +%m/%d/%Y-%H:%M`] STEP 2 OF 13. Cloning and building Modsecurity" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
+echo "[`date +%m/%d/%Y-%H:%M`] Cloning and building Modsecurity" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 start_spinner 'Cloning and building Modsecurity...'
 sleep 1
 
 #Clone and Build Modsecurity
 cd /opt >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/usr/bin/git clone https://github.com/SpiderLabs/ModSecurity >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+rm -rf ModSecurity/ 2>&1 && \
+git clone https://github.com/owasp-modsecurity/ModSecurity >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
 cd ModSecurity >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/usr/bin/git checkout v3.0.4 >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-sh build.sh >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/usr/bin/git submodule init >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/usr/bin/git submodule update >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+git checkout $MODSECURITYVER >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+./build.sh >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+git submodule init >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+git submodule update >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
 ./configure >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
 make >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
 make install >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
 
 stop_spinner $?
 
-echo "[`date +%m/%d/%Y-%H:%M`] STEP 3 OF 13. Cloning Modsecurity Nginx Connector" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
+echo "[`date +%m/%d/%Y-%H:%M`] Cloning Modsecurity Nginx Connector" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 start_spinner 'Cloning Modsecurity Nginx Connector...'
 sleep 1
 
 #Clone Modsecurity Nginx Connector
 cd /opt >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/usr/bin/git clone https://github.com/SpiderLabs/ModSecurity-nginx.git >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
+rm -rf ModSecurity-nginx/ 2>&1 && \
+git clone https://github.com/owasp-modsecurity/ModSecurity-nginx >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
 
 stop_spinner $?
 
-echo "[`date +%m/%d/%Y-%H:%M`] STEP 4 OF 13. Downloading and Extracting Nginx Version $NGINXVER" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
+echo "[`date +%m/%d/%Y-%H:%M`] Downloading and Extracting Nginx Version $NGINXVER" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 start_spinner 'Downloading and Extracting Nginx Version...'
 sleep 1
 
 #Download Latest Nginx Version
 cd $SCRIPTPATH >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/usr/bin/wget http://nginx.org/download/$NGINXVER.tar.gz >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/tar -zxf $NGINXVER.tar.gz >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
+
+wget https://nginx.org/download/$NGINXVER.tar.gz >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+tar -zxf $NGINXVER.tar.gz >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
 
 stop_spinner $?
 
-echo "[`date +%m/%d/%Y-%H:%M`] STEP 5 OF 13. Downloding and Extracting headers-more-nginx-module" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
+echo "[`date +%m/%d/%Y-%H:%M`] Downloding and Extracting headers-more-nginx-module" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 start_spinner 'Downloding and Extracting headers-more-nginx-module...'
 sleep 1
 
 #Download and extract headers-more-nginx-module
 cd /opt >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/usr/bin/wget https://github.com/openresty/headers-more-nginx-module/archive/master.zip >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/usr/bin/unzip master.zip >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/rm master.zip >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
+rm -rf headers-more-nginx-module-master/ 2>&1 && \
+wget https://github.com/openresty/headers-more-nginx-module/archive/master.zip >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+unzip master.zip >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+rm master.zip >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
 
 stop_spinner $?
 
-echo "[`date +%m/%d/%Y-%H:%M`] STEP 6 OF 13. Configuring Nginx with headers-more-nginx-module and Modsecurity-nginx connector" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
+echo "[`date +%m/%d/%Y-%H:%M`] Configuring Nginx with headers-more-nginx-module and Modsecurity-nginx connector" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 start_spinner 'Configuring Nginx with headers-more-nginx-module and Modsecurity-nginx connector...'
 sleep 1
 
 #Configure Nginx with headers-more-nginx-module and Modsecurity-nginx connector
 cd $SCRIPTPATH/$NGINXVER >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-./configure --user=www-data --group=www-data --with-pcre-jit --with-debug --with-http_ssl_module --with-http_realip_module --with-http_geoip_module --add-module=/opt/headers-more-nginx-module-master --add-module=/opt/ModSecurity-nginx --prefix=/usr/local/nginx --conf-path=/usr/local/nginx/conf/nginx.conf >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+./configure --user=www-data --group=www-data --with-pcre-jit --with-debug --with-http_ssl_module --with-http_realip_module --with-http_geoip_module --with-http_auth_request_module --add-module=/opt/headers-more-nginx-module-master --add-module=/opt/ModSecurity-nginx --prefix=/usr/local/nginx --conf-path=/usr/local/nginx/conf/nginx.conf >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
 make >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
 make install >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/cp /opt/ModSecurity/modsecurity.conf-recommended /usr/local/nginx/conf/modsecurity.conf >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
+cp /opt/ModSecurity/modsecurity.conf-recommended /usr/local/nginx/conf/modsecurity.conf >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
 
 stop_spinner $?
 
-echo "[`date +%m/%d/%Y-%H:%M`] STEP 7 OF 13. Creating Necessary Directories, Symlinks and Files" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
+echo "[`date +%m/%d/%Y-%H:%M`] Creating Necessary Directories, Symlinks and Files" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 start_spinner 'Creating Necessary Directories, Symlinks and Files...'
 sleep 1
 
 #Create necessary directories, Symlinks and files
-/bin/mkdir -p /opt/aegis-waf >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/mkdir -p /usr/local/nginx/conf/sites-available >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/mkdir -p /usr/local/nginx/conf/sites-enabled >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/mkdir -p /usr/local/nginx/conf/ssl >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/mkdir -p /usr/local/nginx/conf/listen >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/mkdir -p /usr/local/nginx/conf/modsecurity >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/mkdir -p /usr/local/nginx/logs/modsecurity >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/cp -r $SCRIPTPATH/dirstructure/opt/aegis-waf/* /opt/aegis-waf >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/cp $SCRIPTPATH/dirstructure/usr/local/nginx/conf/modsecurity/unicode.mapping /usr/local/nginx/conf/modsecurity/unicode.mapping >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/cp $SCRIPTPATH/dirstructure/usr/local/nginx/conf/sites-available/default* /usr/local/nginx/conf/sites-available/ >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+mkdir -p /opt/aegis-waf >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+mkdir -p /usr/local/nginx/conf/sites-available >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+mkdir -p /usr/local/nginx/conf/sites-enabled >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+mkdir -p /usr/local/nginx/conf/ssl >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+mkdir -p /usr/local/nginx/conf/listen >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+mkdir -p /usr/local/nginx/conf/modsecurity >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+mkdir -p /usr/local/nginx/logs/modsecurity >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+cp -r $SCRIPTPATH/dirstructure/opt/aegis-waf/* /opt/aegis-waf >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+cp $SCRIPTPATH/dirstructure/usr/local/nginx/conf/modsecurity/unicode.mapping /usr/local/nginx/conf/modsecurity/unicode.mapping >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+cp $SCRIPTPATH/dirstructure/usr/local/nginx/conf/sites-available/default* /usr/local/nginx/conf/sites-available/ >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
 /bin/chmod +x /opt/aegis-waf/scripts/*.sh >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
 #/bin/ln -s /usr/local/nginx/sbin/nginx /bin/nginx && \
 #/bin/ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx && \
@@ -196,43 +196,44 @@ sleep 1
 
 stop_spinner $?
 
-echo "[`date +%m/%d/%Y-%H:%M`] STEP 8 OF 13. Backing up and Re-configuring Nginx" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
+echo "[`date +%m/%d/%Y-%H:%M`] Backing up and Re-configuring Nginx" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 start_spinner 'Backing up and Re-configuring Nginx...'
 sleep 1
 
 #Backup /usr/local/nginx/conf/nginx.conf and replace with $SCRIPTPATH/dirstructure/usr/local/nginx/nginx.conf file
-/bin/cp /usr/local/nginx/conf/nginx.conf /usr/local/nginx/conf/nginx.ORIGINAL >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/cp $SCRIPTPATH/dirstructure/usr/local/nginx/conf/nginx.conf /usr/local/nginx/conf/nginx.conf >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
+cp /usr/local/nginx/conf/nginx.conf /usr/local/nginx/conf/nginx.ORIGINAL >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+cp $SCRIPTPATH/dirstructure/usr/local/nginx/conf/nginx.conf /usr/local/nginx/conf/nginx.conf >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
 
 stop_spinner $?
 
-echo "[`date +%m/%d/%Y-%H:%M`] STEP 9 OF 13. Configuring Nginx Service" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
+echo "[`date +%m/%d/%Y-%H:%M`] Configuring Nginx Service" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 start_spinner 'Configuring Nginx Service...'
 sleep 1
 
 #Configure Nginx service
-/bin/cp $SCRIPTPATH/dirstructure/etc/systemd/system/nginx.service /etc/systemd/system/nginx.service >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+cp $SCRIPTPATH/dirstructure/etc/systemd/system/nginx.service /etc/systemd/system/nginx.service >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
 /bin/systemctl enable /etc/systemd/system/nginx.service >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
 
 stop_spinner $?
 
-echo "[`date +%m/%d/%Y-%H:%M`] STEP 10 OF 13. Configuring Nginx with OWASP Modsecurity Core Rule Set" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
+echo "[`date +%m/%d/%Y-%H:%M`] Configuring Nginx with OWASP Modsecurity Core Rule Set" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 start_spinner 'Configuring Nginx with OWASP Modsecurity Core Rule Set...'
 sleep 1
 
 #configure Nginx with OWASP Modsecurity Core Rule Set
-cd /opt/ && \
-/usr/bin/git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+cd /opt && \
+rm -rf owasp-modsecurity-crs/ 2>&1 && \
+git clone https://github.com/SpiderLabs/owasp-modsecurity-crs.git >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
 cd owasp-modsecurity-crs/ >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/cp -R rules/ /usr/local/nginx/conf/ >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/cp /opt/owasp-modsecurity-crs/crs-setup.conf.example /usr/local/nginx/conf/crs-setup.conf >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
+cp -R rules/ /usr/local/nginx/conf/ >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+cp /opt/owasp-modsecurity-crs/crs-setup.conf.example /usr/local/nginx/conf/crs-setup.conf >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
 
 stop_spinner $?
 
-echo "[`date +%m/%d/%Y-%H:%M`] STEP 11 OF 13. Installing Certbot" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
+echo "[`date +%m/%d/%Y-%H:%M`] Installing Certbot" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 start_spinner 'Installing Certbot...'
 sleep 1
@@ -245,18 +246,18 @@ sleep 1
 
 stop_spinner $?
 
-echo "[`date +%m/%d/%Y-%H:%M`] STEP 12 OF 13. Configuring Certbot" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
+echo "[`date +%m/%d/%Y-%H:%M`] Configuring Certbot" >> $SCRIPTPATH/install_log-$TIMESTAMP.log
 
 start_spinner 'Configuring Certbot...'
 sleep 1
 
 #Configure Certbot
-/bin/mkdir -p /etc/letsencrypt >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
-/bin/cp $SCRIPTPATH/dirstructure/etc/letsencrypt/cli.ini /etc/letsencrypt/cli.ini >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
+mkdir -p /etc/letsencrypt >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1 && \
+cp $SCRIPTPATH/dirstructure/etc/letsencrypt/cli.ini /etc/letsencrypt/cli.ini >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
 
 stop_spinner $?
 
-echo "[`date +%m/%d/%Y-%H:%M`] STEP 13 OF 13: Creating Diffie-Hellman (DH) Key Exchange File" >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
+echo "[`date +%m/%d/%Y-%H:%M`] Creating Diffie-Hellman (DH) Key Exchange File" >> $SCRIPTPATH/install_log-$TIMESTAMP.log 2>&1
 
 echo "==== WARNING ===="  | boxes -d stone -p a2v1
 echo "${GREEN}The DH Key Exchange File creation process will take a VERY long time to complete (about ~10 minutes on 1 CPU Machine). ${RESET}"
